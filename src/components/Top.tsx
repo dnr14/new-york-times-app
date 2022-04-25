@@ -1,61 +1,116 @@
 import styled from "styled-components";
-import calendarCheck from "../assets/images/top/Calendar-check.svg";
-import search from "../assets/images/top/Search.svg";
-import cellular from "../assets/images/top/Cellular.svg";
-import wifi from "../assets/images/top/Wi-Fi.svg";
-import battery from "../assets/images/top/Battery.svg";
-import { useAppDispatch } from "../modules/store";
-import { modalOpen } from "../modules/slices/modalSlice";
+import calendarImg from "../assets/images/top/Calendar.svg";
+import calendarFillImg from "../assets/images/top/CalendarFill.svg";
+import searchImg from "../assets/images/top/Search.svg";
+import searchFillImg from "../assets/images/top/SearchFill.svg";
+import cellularImg from "../assets/images/top/Cellular.svg";
+import wifiImg from "../assets/images/top/Wi-Fi.svg";
+import batteryImg from "../assets/images/top/Battery.svg";
+import { useAppDispatch, useTypedSelector } from "../modules/store";
+import { openCloseModal } from "../modules/slices/modalSlice";
+import { useCallback } from "react";
+import useThrottling from "../hooks/useThrottling";
 
-// 연속 클릭 시 방지를 위해 디바운스 구현하자.
 const Top = () => {
+  const throttling = useThrottling();
   const dispatch = useAppDispatch();
-  const handleModalOpen = () => {
-    dispatch(modalOpen());
+  const filter = useTypedSelector(({ modal }) => modal.filter);
+
+  /**
+   * 유저가 빠르게 눌러서 디스패치가 여러번 실행되는걸 방지하기 위해서입니다.
+   */
+  const handleModalOpen = useCallback(() => {
+    throttling(() => dispatch(openCloseModal(true)), 200);
+  }, [throttling, dispatch]);
+
+  const dataTransformation = (filter: ModalFilter) => {
+    const CLASS_NAME = "selected";
+
+    const headlineKeyword: FilterData = {
+      className: undefined,
+      text: "전체 헤드라인",
+      img: searchImg,
+    };
+    const selectedDate: FilterData = {
+      className: undefined,
+      text: "전체 날짜",
+      img: calendarImg,
+    };
+
+    const selectedCountrys: FilterData = {
+      className: undefined,
+      text: "전체 국가",
+      img: "",
+    };
+
+    if (filter.headlineKeyword !== null) {
+      headlineKeyword.className = CLASS_NAME;
+      headlineKeyword.text = filter.headlineKeyword;
+      headlineKeyword.img = searchFillImg;
+    }
+    if (filter.selectedDate !== null) {
+      selectedDate.className = CLASS_NAME;
+      selectedDate.text = filter.selectedDate;
+      selectedDate.img = calendarFillImg;
+    }
+    if (filter.selectedCountrys !== null) {
+      selectedCountrys.className = CLASS_NAME;
+      selectedCountrys.text = `${filter.selectedCountrys[0]} 외 ${
+        filter.selectedCountrys.length - 1
+      }`;
+    }
+
+    return {
+      headlineKeyword,
+      selectedDate,
+      selectedCountrys,
+    };
   };
 
+  const { headlineKeyword, selectedCountrys, selectedDate } =
+    dataTransformation(filter);
+
   return (
-    <>
-      <StatusBar>
-        <Time>9:41</Time>
-        <Symbol>
-          <img src={cellular} alt="cellular" />
-          <img src={wifi} alt="wifi" />
-          <img src={battery} alt="battery" />
-        </Symbol>
-      </StatusBar>
-      <Container>
-        <FillterGroup>
-          <Category onClick={handleModalOpen}>
-            <HeadLineFilterWrapper>
-              <SearchImg src={search} alt="search" />
-              <HeadLineText>전체 헤드라인</HeadLineText>
+    <header>
+      <StatusBarContainer>
+        <TimeWrapper>9:41</TimeWrapper>
+        <IconWrapper>
+          <img src={cellularImg} alt="cellularImg" />
+          <img src={wifiImg} alt="wifiImg" />
+          <img src={batteryImg} alt="batteryImg" />
+        </IconWrapper>
+      </StatusBarContainer>
+      <FilterContainer>
+        <FilterGroup>
+          <CategorysWrppaer onClick={handleModalOpen}>
+            <HeadLineFilterWrapper className={headlineKeyword.className}>
+              <SearchImg src={headlineKeyword.img} alt="searchImg" />
+              <HeadLineText>{headlineKeyword.text}</HeadLineText>
             </HeadLineFilterWrapper>
-            <DateFilterWrapper>
-              <CalendarCheckImg src={calendarCheck} alt="calendarCheck" />
-              <DateText>전체 날짜</DateText>
+            <DateFilterWrapper className={selectedDate.className}>
+              <CalendarImg src={selectedDate.img} alt="calendarImg" />
+              <DateText>{selectedDate.text}</DateText>
             </DateFilterWrapper>
-            <CountryFilterWrapper>
-              <CountryText>전체 국가</CountryText>
-            </CountryFilterWrapper>
-          </Category>
-        </FillterGroup>
-      </Container>
-      <Area />
-    </>
+            <CountrysFilterWrapper className={selectedCountrys.className}>
+              <CountryText>{selectedCountrys.text}</CountryText>
+            </CountrysFilterWrapper>
+          </CategorysWrppaer>
+        </FilterGroup>
+      </FilterContainer>
+      <UnderLine />
+    </header>
   );
 };
 
-const Area = styled.div`
+const UnderLine = styled.div`
   position: absolute;
   width: 375px;
   height: 1px;
-  left: 0px;
   top: 104px;
   background: #c4c4c4;
 `;
 
-const StatusBar = styled.header`
+const StatusBarContainer = styled.div`
   position: absolute;
   height: 44px;
   left: 0px;
@@ -66,7 +121,7 @@ const StatusBar = styled.header`
   border-top-right-radius: 30px;
 `;
 
-const Time = styled.span`
+const TimeWrapper = styled.span`
   position: absolute;
   width: 32px;
   height: 18px;
@@ -84,221 +139,147 @@ const Time = styled.span`
   color: #000000;
 `;
 
-const Symbol = styled.div`
+const IconWrapper = styled.div`
   position: absolute;
-  width: 67px;
-  height: 11.5px;
   left: 293.5px;
   top: 17.16px;
+  width: 67px;
+  height: 11.5px;
   display: flex;
-  gap: 3px;
+  gap: 5px;
 `;
 
-const Container = styled.nav`
+const FilterContainer = styled.nav`
   position: absolute;
   width: 375px;
   height: 60px;
-  left: 0px;
   top: 44px;
   background: rgba(255, 255, 255, 1);
 `;
 
-const FillterGroup = styled.nav`
+const FilterGroup = styled.div`
   position: absolute;
   width: 355px;
   height: 34px;
   left: 20px;
   top: 13px;
   font-size: 12px;
+  & .selected {
+    border-color: #3478f6;
+    & span {
+      color: #3478f6;
+    }
+  }
 `;
 
-const Category = styled.div`
+const CategorysWrppaer = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 0px;
-
-  position: absolute;
   height: 34px;
-  left: 0px;
-  top: 0px;
+  gap: 7px;
 `;
-
+/* 헤드 라인 */
 const HeadLineFilterWrapper = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 6px 12px 4px;
-
-  position: static;
+  padding: 5px 12px;
+  gap: 4px;
   width: 117px;
   height: 34px;
-  left: 0px;
-  top: 0px;
-
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
   border-radius: 30px;
-
-  flex: none;
-  order: 2;
-  flex-grow: 0;
+  order: 1;
 `;
 
+/* 헤드라인 아이콘 */
 const SearchImg = styled.img`
-  position: static;
   width: 16px;
   height: 16px;
   left: 12px;
-  top: 10px;
-
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-  margin: 0px 4px;
 `;
-
+/* 헤드라인 텍스트 */
 const HeadLineText = styled.span`
-  position: static;
   width: 73px;
   height: 24px;
-  left: 32px;
-  top: 6px;
-
-  font-family: "Apple SD Gothic Neo";
-  font-style: normal;
   font-weight: 400;
   line-height: 24px;
-
-  text-align: right;
+  text-align: center;
   letter-spacing: -0.04em;
-
   color: #6d6d6d;
-
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  margin: 0px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
+/* 전체 날짜 */
 const DateFilterWrapper = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 6px 12px 4px;
-
-  position: static;
-  width: 94px;
+  padding: 5px 12px;
+  gap: 4px;
+  min-width: 94px;
   height: 34px;
-  left: 124px;
-  top: 0px;
-
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
   border-radius: 30px;
-
-  flex: none;
-  order: 3;
-  flex-grow: 0;
-  margin: 0px 7px;
+  order: 2;
 `;
 
-const DateText = styled.span`
-  /* 전체 날짜 */
-
-  position: static;
-  width: 50px;
-  height: 24px;
-  left: 32px;
-  top: 6px;
-
-  font-family: "Apple SD Gothic Neo";
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  /* identical to box height, or 171% */
-
-  text-align: right;
-  letter-spacing: -0.04em;
-
-  /* Black 80 */
-
-  color: #6d6d6d;
-
-  /* Inside auto layout */
-
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  margin: 0px 4px;
-`;
-
-const CalendarCheckImg = styled.img`
-  position: static;
+/* 전체 날짜 아이콘*/
+const CalendarImg = styled.img`
   width: 16px;
   height: 16px;
-  left: 22px;
-  top: 10px;
-
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-  margin: 0px 4px;
 `;
 
-const CountryFilterWrapper = styled.div`
+/* 전체 날짜 텍스트 */
+const DateText = styled.span`
+  min-width: 50px;
+  height: 24px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: -0.04em;
+  color: #6d6d6d;
+`;
+
+/* 전체 국가 */
+const CountrysFilterWrapper = styled.div`
   cursor: pointer;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  padding: 6px 12px 4px;
-
-  position: static;
-  width: 74px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 12px;
   height: 34px;
-  left: 225px;
-  top: 0px;
-
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
   border-radius: 30px;
-
-  flex: none;
-  order: 4;
-  flex-grow: 0;
+  order: 3;
 `;
-
+/* 전체 국가 텍스트 */
 const CountryText = styled.span`
-  position: static;
-  width: 50px;
   height: 24px;
-  left: 12px;
-  top: 6px;
-
-  font-family: "Apple SD Gothic Neo";
-  font-style: normal;
+  max-width: 90px;
   font-weight: 400;
   line-height: 24px;
-  /* identical to box height, or 171% */
-
-  text-align: right;
   letter-spacing: -0.04em;
-
-  /* Black 80 */
-
   color: #6d6d6d;
-
-  /* Inside auto layout */
-
   flex: none;
   order: 0;
   flex-grow: 0;
-  margin: 0px 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export default Top;

@@ -23,7 +23,6 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-  font-family: 'Roboto', sans-serif;
 }
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
@@ -33,6 +32,8 @@ html,
 body {
 	line-height: 1;
   font-size:14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
 }
 
 ol, ul {

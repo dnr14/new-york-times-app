@@ -3,6 +3,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import GlobalStyle from "./assets/styles/global";
+import GlobalFonts from "./assets/styles/fonts";
 import { Provider } from "react-redux";
 import store from "./modules/store";
 import { persistStore } from "redux-persist";
@@ -18,6 +19,7 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GlobalStyle />
+        <GlobalFonts />
         <App />
       </PersistGate>
     </Provider>

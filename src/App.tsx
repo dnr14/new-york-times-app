@@ -5,15 +5,44 @@ import styled from "styled-components";
 import Footer from "./components/Footer";
 import Top from "./components/Top";
 import Modal from "./components/Modal";
-import { useTypedSelector } from "./modules/store";
+import useThrottling from "./hooks/useThrottling";
+import { useAppDispatch, useTypedSelector } from "./modules/store";
+import { useEffect, useRef } from "react";
+import { setYOffset } from "./modules/slices/scrollSlice";
 
 function App() {
   const { isOpen } = useTypedSelector(({ modal }) => modal);
+  const { screenY } = useTypedSelector(({ scroll }) => scroll);
+  const mainRef = useRef<HTMLElement | null>();
+
+  const throttling = useThrottling();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const handleScroll = ({ target }: Event) => {
+      throttling(() => {
+        const main = target as HTMLElement;
+        dispatch(setYOffset(main.scrollTop));
+      });
+    };
+    mainRef.current?.addEventListener("scroll", handleScroll);
+    return () => {
+      mainRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, [dispatch, throttling]);
+
+  /**
+   * -1은 스크롤 위치 초기화입니다. -1이 들어오면 스크롤이 최상단(top)으로 이동합니다.
+   */
+  useEffect(() => {
+    if (screenY !== 0) mainRef.current?.scrollTo({ top: screenY });
+    if (screenY === -1) mainRef.current?.scrollTo({ top: 0 });
+  }, [screenY]);
 
   return (
     <Container>
       <Top />
-      <Main>
+      <Main ref={(node) => (mainRef.current = node)}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/scrap" element={<Scrap />} />
@@ -29,12 +58,12 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0px;
   position: absolute;
   width: 335px;
   height: 664px;
   left: 20px;
   top: 124px;
+  gap: 8px;
   overflow: scroll;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
@@ -52,8 +81,6 @@ const Container = styled.div`
   margin: 0 auto;
   background: rgba(240, 241, 244, 1);
   border-radius: 30px;
-  overflow: hidden;
-
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 `;

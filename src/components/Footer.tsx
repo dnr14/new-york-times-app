@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import sheetLine from "../assets/images/footer/Sheet_Line.svg";
-import homeFill from "../assets/images/footer/Home_Fill.svg";
+import sheetLineImg from "../assets/images/footer/SheetLine.svg";
+import homeFillImg from "../assets/images/footer/HomeFill.svg";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -8,13 +8,13 @@ const Footer = () => {
     <FooterContainer>
       <Link to="/">
         <HomeButton>
-          <IcoHomeFill src={homeFill} alt="homeFill" />
+          <HomeFill src={homeFillImg} alt="homeFillImg" />
           <HomeText>홈</HomeText>
         </HomeButton>
       </Link>
       <Link to="/scrap">
         <SheetButton>
-          <IcoSheetLine src={sheetLine} alt="sheetLine" />
+          <SheetLine src={sheetLineImg} alt="sheetLineImg" />
           <SheetText>스크랩</SheetText>
         </SheetButton>
       </Link>
@@ -50,7 +50,7 @@ const SheetButton = styled.div`
   width: 25px;
 `;
 
-const IcoSheetLine = styled.img`
+const SheetLine = styled.img`
   position: absolute;
   left: 72%;
   right: 21.6%;
@@ -91,7 +91,7 @@ const HomeButton = styled.div`
   flex-grow: 0;
 `;
 
-const IcoHomeFill = styled.img`
+const HomeFill = styled.img`
   position: absolute;
   left: 21.33%;
   right: 72.27%;

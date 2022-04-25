@@ -1,16 +1,9 @@
-import { AsyncThunk } from "@reduxjs/toolkit";
 import { useRef } from "react";
-import { useAppDispatch } from "../modules/store";
+import useThrottling from "./useThrottling";
 
-type UseInfinityScrollFunc = (
-  page: number,
-  status: StatusType,
-  asyncThunk: AsyncThunk<HomeResponse, number, any>
-) => HandleObserver;
-
-const useInfinityScroll: UseInfinityScrollFunc = (page, status, asyncThunk) => {
-  const dispatch = useAppDispatch();
+const useInfinityScroll: UseInfinityScrollFunc = (page, status, callback) => {
   const observerRef = useRef<IntersectionObserver>();
+  const throttling = useThrottling();
 
   const handleObserver: HandleObserver = (node) => {
     if (node === null) return;
@@ -20,7 +13,7 @@ const useInfinityScroll: UseInfinityScrollFunc = (page, status, asyncThunk) => {
       const { target, isIntersecting } = entry;
       if (isIntersecting && status !== "loading") {
         observer.unobserve(target);
-        dispatch(asyncThunk(page + 1));
+        throttling(() => callback(page), 400);
       }
     };
 

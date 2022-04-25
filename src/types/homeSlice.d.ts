@@ -1,6 +1,6 @@
-type StringOrNull = StringOrNull;
+declare type StringOrNull = string | null;
 
-// 기사를 기자들
+// 기사를 쓴 기자들 이름입니다.
 interface Person {
   firstname: StringOrNull;
   lastname: StringOrNull;
@@ -51,9 +51,19 @@ declare type Meta = {
 
 declare type StatusType = "loading" | "idle" | "success" | "failed";
 
-declare interface HomeResponse {
+declare interface HomeSliceInit {
   docs: Doc[];
   meta: Meta;
   page: number;
   status: StatusType;
 }
+
+declare interface ThunkProps {
+  page: number;
+  beginDate: StringOrNull;
+}
+
+declare type PayloadCreatorFunc = (
+  page: number,
+  beginDate?: StringOrNull
+) => ThunkProps;
