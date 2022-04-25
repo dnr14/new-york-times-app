@@ -4,8 +4,16 @@ import search from "../assets/images/top/Search.svg";
 import cellular from "../assets/images/top/Cellular.svg";
 import wifi from "../assets/images/top/Wi-Fi.svg";
 import battery from "../assets/images/top/Battery.svg";
+import { useAppDispatch } from "../modules/store";
+import { modalOpen } from "../modules/slices/modalSlice";
 
+// 연속 클릭 시 방지를 위해 디바운스 구현하자.
 const Top = () => {
+  const dispatch = useAppDispatch();
+  const handleModalOpen = () => {
+    dispatch(modalOpen());
+  };
+
   return (
     <>
       <StatusBar>
@@ -18,18 +26,18 @@ const Top = () => {
       </StatusBar>
       <Container>
         <FillterGroup>
-          <Category>
-            <HeadLineFilter>
+          <Category onClick={handleModalOpen}>
+            <HeadLineFilterWrapper>
               <SearchImg src={search} alt="search" />
               <HeadLineText>전체 헤드라인</HeadLineText>
-            </HeadLineFilter>
-            <DateFilter>
+            </HeadLineFilterWrapper>
+            <DateFilterWrapper>
               <CalendarCheckImg src={calendarCheck} alt="calendarCheck" />
               <DateText>전체 날짜</DateText>
-            </DateFilter>
-            <CountryFilter>
+            </DateFilterWrapper>
+            <CountryFilterWrapper>
               <CountryText>전체 국가</CountryText>
-            </CountryFilter>
+            </CountryFilterWrapper>
           </Category>
         </FillterGroup>
       </Container>
@@ -117,7 +125,8 @@ const Category = styled.div`
   top: 0px;
 `;
 
-const HeadLineFilter = styled.div`
+const HeadLineFilterWrapper = styled.div`
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -175,7 +184,8 @@ const HeadLineText = styled.span`
   margin: 0px 4px;
 `;
 
-const DateFilter = styled.div`
+const DateFilterWrapper = styled.div`
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -241,7 +251,8 @@ const CalendarCheckImg = styled.img`
   margin: 0px 4px;
 `;
 
-const CountryFilter = styled.div`
+const CountryFilterWrapper = styled.div`
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   align-items: flex-start;

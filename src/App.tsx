@@ -4,8 +4,12 @@ import Scrap from "./pages/Scrap";
 import styled from "styled-components";
 import Footer from "./components/Footer";
 import Top from "./components/Top";
+import Modal from "./components/Modal";
+import { useTypedSelector } from "./modules/store";
 
 function App() {
+  const { isOpen } = useTypedSelector(({ modal }) => modal);
+
   return (
     <Container>
       <Top />
@@ -16,6 +20,7 @@ function App() {
         </Routes>
       </Main>
       <Footer />
+      {isOpen && <Modal />}
     </Container>
   );
 }
