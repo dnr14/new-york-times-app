@@ -8,7 +8,7 @@ import Modal from "./components/Modal";
 import useThrottling from "./hooks/useThrottling";
 import { useAppDispatch, useTypedSelector } from "./modules/store";
 import { useEffect, useRef } from "react";
-import { setYOffset } from "./modules/slices/scrollSlice";
+import { SCROLL_TOP, setYOffset } from "./modules/slices/scrollSlice";
 
 function App() {
   const { isOpen } = useTypedSelector(({ modal }) => modal);
@@ -21,14 +21,12 @@ function App() {
   useEffect(() => {
     const handleScroll = ({ target }: Event) => {
       throttling(() => {
-        const main = target as HTMLElement;
-        dispatch(setYOffset(main.scrollTop));
+        const { scrollTop } = target as HTMLElement;
+        dispatch(setYOffset(scrollTop));
       });
     };
     mainRef.current?.addEventListener("scroll", handleScroll);
-    return () => {
-      mainRef.current?.removeEventListener("scroll", handleScroll);
-    };
+    return () => mainRef.current?.removeEventListener("scroll", handleScroll);
   }, [dispatch, throttling]);
 
   /**
@@ -36,7 +34,7 @@ function App() {
    */
   useEffect(() => {
     if (screenY !== 0) mainRef.current?.scrollTo({ top: screenY });
-    if (screenY === -1) mainRef.current?.scrollTo({ top: 0 });
+    if (screenY === SCROLL_TOP) mainRef.current?.scrollTo({ top: 0 });
   }, [screenY]);
 
   return (
@@ -55,10 +53,10 @@ function App() {
 }
 
 const Main = styled.main`
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  position: absolute;
   width: 335px;
   height: 664px;
   left: 20px;

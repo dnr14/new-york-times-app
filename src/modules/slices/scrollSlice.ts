@@ -14,5 +14,6 @@ const scrollSlice = createSlice({
   },
 });
 
+export const SCROLL_TOP = -1;
 export const { setYOffset } = scrollSlice.actions;
 export default scrollSlice;

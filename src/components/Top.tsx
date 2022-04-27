@@ -68,7 +68,7 @@ const Top = () => {
   };
 
   const { headlineKeyword, selectedCountrys, selectedDate } =
-    dataTransformation(filter);
+    dataTransformation(filter["home"]);
 
   return (
     <header>

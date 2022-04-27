@@ -46,12 +46,11 @@ const ArticleTitleWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  position: static;
   width: 295px;
   height: 55px;
   gap: 11px;
 `;
-
+/* 기사 제목 텍스트 */
 const TitleText = styled.a`
   overflow: hidden;
   width: 260px;
@@ -60,16 +59,15 @@ const TitleText = styled.a`
   font-size: 14px;
   line-height: 28px;
   letter-spacing: -0.05em;
-  text-transform: uppercase;
   color: #000000;
 `;
 
+/* 스크랩 유무 스타 래퍼 */
 const StarImgWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   padding: 4px;
-  position: static;
   width: 24px;
   height: 24px;
   left: 271px;
@@ -79,11 +77,13 @@ const StarImgWrapper = styled.div`
   flex-grow: 0;
 `;
 
+/* 스크랩 유무 스타 */
 const StarImg = styled.img`
   width: 16px;
   height: 16px;
 `;
 
+/* 기사에 대한 추가 정보 컨테이너 */
 const ArticleBottomContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -93,6 +93,7 @@ const ArticleBottomContainer = styled.div`
   height: 20px;
 `;
 
+/* 기사에 대한 추가 왼쪽 래퍼 */
 const ArticleLeftWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -101,7 +102,7 @@ const ArticleLeftWrapper = styled.div`
   height: 20px;
   gap: 8px;
 `;
-
+/* 기사에 대한 추가 오른쪽 래퍼 */
 const ArticleRightWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -109,7 +110,7 @@ const ArticleRightWrapper = styled.div`
   width: 85px;
   height: 20px;
 `;
-
+/* 기사 작성 날짜 텍스트 */
 const DateText = styled.span`
   width: 85px;
   height: 20px;
@@ -119,7 +120,7 @@ const DateText = styled.span`
   letter-spacing: -0.05em;
   color: #6d6d6d;
 `;
-
+/* 기사가 작성된 신문사 텍스트 */
 const NewspaperText = styled.span`
   width: 113px;
   height: 20px;
@@ -130,6 +131,7 @@ const NewspaperText = styled.span`
   color: #000000;
 `;
 
+/* 기사를 작성한 기자 이름 텍스트 */
 const ReportNameText = styled.span`
   width: 70px;
   height: 20px;

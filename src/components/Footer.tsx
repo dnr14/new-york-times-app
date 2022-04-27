@@ -38,7 +38,6 @@ const FooterContainer = styled.footer`
 `;
 
 const SheetButton = styled.div`
-  position: static;
   left: 71.73%;
   right: 21.33%;
   top: 23.53%;
@@ -78,7 +77,6 @@ const SheetText = styled.span`
 `;
 
 const HomeButton = styled.div`
-  position: static;
   left: 21.33%;
   right: 72.27%;
   top: 23.53%;

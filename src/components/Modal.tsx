@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
-import { setFilter } from "../modules/slices/modalSlice";
+import {
+  createSetFilterPayload,
+  setFilter,
+} from "../modules/slices/modalSlice";
 import { useAppDispatch, useTypedSelector } from "../modules/store";
 import ModalInputTitle from "./ModalInputTitle";
 import ModalDatePick from "./ModalDatePick";
@@ -86,13 +89,13 @@ const Modal = () => {
     if (selectedCountrys.size !== 0) {
       filter.selectedCountrys = Array.from(selectedCountrys);
     }
-    dispatch(setFilter(filter));
+    dispatch(setFilter(createSetFilterPayload(filter, "home")));
   };
 
   /**
-   * 헤드라인 키워드 유효성 검사해야된다.
-   * HTML태그 형태로 들어오는지 체크
-   * 최대 100자로 제한
+   * 헤드라인 키워드 유효성 검사
+   * HTML태그 형태로 들어오는지 체크합니다.
+   * 최대 100자로 제한합니다.
    */
   const handleHeadLineValidation = (value: string) => {
     const HEAD_LINE_KEYWORD_MAX_LENGTH = 100;
@@ -189,7 +192,7 @@ const Modal = () => {
   );
 
   useEffect(() => {
-    const { headlineKeyword, selectedDate, selectedCountrys } = filter;
+    const { headlineKeyword, selectedDate, selectedCountrys } = filter["home"];
 
     if (headlineKeyword !== null) {
       setHeadLineKeyword(headlineKeyword);
@@ -317,7 +320,6 @@ const CountryWrapper = styled.div<Pick<ModalStyleProps, "width">>`
   justify-content: center;
   align-items: center;
   padding: 6px 12px 4px;
-  position: static;
   height: 34px;
   border: 1px solid #f2f2f2;
   box-sizing: border-box;

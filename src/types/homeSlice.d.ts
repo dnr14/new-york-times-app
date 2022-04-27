@@ -56,14 +56,15 @@ declare interface HomeSliceInit {
   meta: Meta;
   page: number;
   status: StatusType;
+  isLastPage: boolean;
 }
 
-declare interface ThunkProps {
+declare interface FetchArticlesThunkPayload {
   page: number;
   beginDate: StringOrNull;
 }
 
-declare type PayloadCreatorFunc = (
+declare type CreateFetchArticlesPayloadFunc = (
   page: number,
   beginDate?: StringOrNull
-) => ThunkProps;
+) => FetchArticlesThunkPayload;

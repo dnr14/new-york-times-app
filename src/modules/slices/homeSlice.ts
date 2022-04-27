@@ -8,30 +8,33 @@ const NAME = "home";
  * 전체 날짜없을 때 호출하는 썽크입니다.
  * 에러 처리해야됩니다.
  */
-const makeEndPoint = (page: number, beginDate: string | null) => {
+const createEndPoint = (page: number, beginDate: string | null) => {
   let url = `/articlesearch.json?${API_KEY}&page=${page}&sort=oldest`;
   if (beginDate) url += `&begin_date=${beginDate.replace(/\./gi, "")}`;
   return `${url}`;
 };
 
-export const payloadCreator: PayloadCreatorFunc = (page, beginDate = null) => ({
+export const createFetchArticlesPayload: CreateFetchArticlesPayloadFunc = (
+  page,
+  beginDate = null
+) => ({
   page,
   beginDate,
 });
 
-export const fetchArticles = createAsyncThunk<HomeSliceInit, ThunkProps>(
-  `${NAME}/GET/ARTICLES`,
-  async ({ page, beginDate }, { rejectWithValue }) => {
-    try {
-      const response = await http.get<HomeSliceInit>(
-        makeEndPoint(page, beginDate)
-      );
-      return response;
-    } catch (e) {
-      return rejectWithValue("실패했습니다.");
-    }
+export const fetchArticles = createAsyncThunk<
+  HomeSliceInit,
+  FetchArticlesThunkPayload
+>(`${NAME}/GET/ARTICLES`, async ({ page, beginDate }, { rejectWithValue }) => {
+  try {
+    const response = await http.get<HomeSliceInit>(
+      createEndPoint(page, beginDate)
+    );
+    return response;
+  } catch (e) {
+    return rejectWithValue("실패했습니다.");
   }
-);
+});
 
 const initialState: HomeSliceInit = {
   docs: [],
@@ -42,6 +45,7 @@ const initialState: HomeSliceInit = {
   },
   page: 0,
   status: "idle",
+  isLastPage: false,
 };
 
 const homeSlice = createSlice({
@@ -60,13 +64,19 @@ const homeSlice = createSlice({
       .addCase(fetchArticles.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchArticles.fulfilled, (state, action) => {
-        state.docs = [...state.docs, ...action.payload.docs];
-        state.meta = action.payload.meta;
-        state.page = Math.floor(action.payload.meta.offset / 10);
+      .addCase(fetchArticles.fulfilled, (state, { payload }) => {
+        const currentPage = Math.floor(payload.meta.offset / 10);
+        const lastPage = Math.floor(payload.meta.hits / 10);
+
+        state.docs = [...state.docs, ...payload.docs];
+        state.meta = payload.meta;
+        state.page = currentPage;
         state.status = "success";
+        state.isLastPage = currentPage === lastPage;
       })
-      .addCase(fetchArticles.rejected, (state, { payload }) => {});
+      .addCase(fetchArticles.rejected, (state, { payload }) => {
+        state.status = "failed";
+      });
   },
 });
 

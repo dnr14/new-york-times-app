@@ -2,8 +2,15 @@ declare interface ModalSliceInit {
   isOpen: boolean;
   status: "open" | "close";
   filter: {
-    headlineKeyword: StringOrNull;
-    selectedDate: StringOrNull;
-    selectedCountrys: string[] | null;
+    home: {
+      headlineKeyword: StringOrNull;
+      selectedDate: StringOrNull;
+      selectedCountrys: string[] | null;
+    };
+    scrap: {
+      headlineKeyword: StringOrNull;
+      selectedDate: StringOrNull;
+      selectedCountrys: string[] | null;
+    };
   };
 }
