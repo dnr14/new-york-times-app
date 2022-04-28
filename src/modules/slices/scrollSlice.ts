@@ -14,6 +14,7 @@ const scrollSlice = createSlice({
   },
 });
 
+/* 스크롤을 TOP으로 올리는 상수입니다. */
 export const SCROLL_TOP = -1;
 export const { setYOffset } = scrollSlice.actions;
 export default scrollSlice;

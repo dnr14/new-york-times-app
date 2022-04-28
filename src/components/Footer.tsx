@@ -1,23 +1,51 @@
 import styled from "styled-components";
 import sheetLineImg from "../assets/images/footer/SheetLine.svg";
+import sheetLineFillImg from "../assets/images/footer/SheetLineFill.svg";
 import homeFillImg from "../assets/images/footer/HomeFill.svg";
-import { Link } from "react-router-dom";
+import homeImg from "../assets/images/footer/Home.svg";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { setPage } from "../modules/slices/scrapSlice";
+import { SCROLL_TOP, setYOffset } from "../modules/slices/scrollSlice";
 
 const Footer = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const HOME_PATH = useMemo(() => "/", []) as "/";
+  const SCRAP_PATH = useMemo(() => "/scrap", []) as "/scrap";
+
+  const handleClick = useCallback(
+    (path: typeof HOME_PATH | typeof SCRAP_PATH) => () => {
+      dispatch(setYOffset(SCROLL_TOP));
+      if (path === HOME_PATH) dispatch(setPage(1));
+      navigate(path);
+    },
+    [dispatch, navigate, HOME_PATH]
+  );
+
   return (
     <FooterContainer>
-      <Link to="/">
-        <HomeButton>
-          <HomeFill src={homeFillImg} alt="homeFillImg" />
-          <HomeText>홈</HomeText>
-        </HomeButton>
-      </Link>
-      <Link to="/scrap">
-        <SheetButton>
-          <SheetLine src={sheetLineImg} alt="sheetLineImg" />
-          <SheetText>스크랩</SheetText>
-        </SheetButton>
-      </Link>
+      <HomeButton onClick={handleClick(HOME_PATH)}>
+        <HomeFill
+          src={pathname === HOME_PATH ? homeFillImg : homeImg}
+          alt="homeFillImg"
+        />
+        <HomeText className={pathname === HOME_PATH ? "active" : ""}>
+          홈
+        </HomeText>
+      </HomeButton>
+      <SheetButton onClick={handleClick(SCRAP_PATH)}>
+        <SheetLine
+          src={pathname === SCRAP_PATH ? sheetLineFillImg : sheetLineImg}
+          alt="sheetLineImg"
+        />
+        <SheetText className={pathname === SCRAP_PATH ? "active" : ""}>
+          스크랩
+        </SheetText>
+      </SheetButton>
     </FooterContainer>
   );
 };
@@ -38,6 +66,7 @@ const FooterContainer = styled.footer`
 `;
 
 const SheetButton = styled.div`
+  cursor: pointer;
   left: 71.73%;
   right: 21.33%;
   top: 23.53%;
@@ -74,9 +103,13 @@ const SheetText = styled.span`
   text-align: center;
   text-transform: uppercase;
   color: #6d6d6d;
+  &.active {
+    color: #ffffff;
+  }
 `;
 
 const HomeButton = styled.div`
+  cursor: pointer;
   left: 21.33%;
   right: 72.27%;
   top: 23.53%;
@@ -114,8 +147,10 @@ const HomeText = styled.span`
   align-items: center;
   text-align: center;
   text-transform: uppercase;
-
-  color: #ffffff;
+  color: #6d6d6d;
+  &.active {
+    color: #ffffff;
+  }
 `;
 
 export default Footer;

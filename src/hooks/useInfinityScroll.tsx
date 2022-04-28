@@ -29,7 +29,7 @@ const useInfinityScroll: UseInfinityScrollFunc = (page, status, callback) => {
     const options = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.5,
+      threshold: 1,
     };
     observerRef.current = new IntersectionObserver(observerCallback, options);
     observerRef.current.observe(node);

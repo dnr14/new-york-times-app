@@ -55,9 +55,11 @@ const Top = () => {
     }
     if (filter.selectedCountrys !== null) {
       selectedCountrys.className = CLASS_NAME;
-      selectedCountrys.text = `${filter.selectedCountrys[0]} 외 ${
-        filter.selectedCountrys.length - 1
-      }`;
+      let text = `${filter.selectedCountrys[0]}`;
+
+      if (filter.selectedCountrys.length > 1)
+        text += ` 외 ${filter.selectedCountrys.length - 1}`;
+      selectedCountrys.text = text;
     }
 
     return {

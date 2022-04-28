@@ -1,17 +1,28 @@
 import styled from "styled-components";
-// import star from "../assets/images/main/Star.svg";
+import star from "../assets/images/main/Star.svg";
 import starFill from "../assets/images/main/StarFill.svg";
 import { forwardRef, memo } from "react";
 import moment from "moment";
 
 const Article = forwardRef<HTMLDivElement, ArticleProps>(
-  ({ web_url, main, source, firstname, pub_date }, ref) => {
+  (
+    {
+      _id,
+      web_url,
+      main,
+      source,
+      firstname,
+      pub_date,
+      isScrap,
+      handleScrapOnClick,
+    },
+    ref
+  ) => {
     return (
       <ArticleContainer ref={ref}>
         <ArticleTitleWrapper>
-          <StarImgWrapper>
-            {/* <StarImg src={isScrap ? starFill : star} alt="star" /> */}
-            <StarImg src={starFill} alt="star" />
+          <StarImgWrapper onClick={handleScrapOnClick(_id)}>
+            <StarImg src={isScrap ? starFill : star} alt="star" />
           </StarImgWrapper>
           <TitleText href={web_url}>{main}</TitleText>
         </ArticleTitleWrapper>
@@ -64,6 +75,7 @@ const TitleText = styled.a`
 
 /* 스크랩 유무 스타 래퍼 */
 const StarImgWrapper = styled.div`
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   align-items: flex-start;

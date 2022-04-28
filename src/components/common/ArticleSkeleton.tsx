@@ -1,11 +1,18 @@
 import { Skeleton } from "@mui/material";
-const ArticleSkeleton = () => {
+import { FC } from "react";
+
+interface ArticleSkeletonProps {
+  width: number;
+  height: number;
+}
+
+const ArticleSkeleton: FC<ArticleSkeletonProps> = ({ height, width }) => {
   return (
     <div>
       <Skeleton
         variant="rectangular"
-        width={335}
-        height={104}
+        width={width}
+        height={height}
         sx={{ borderRadius: "8px" }}
       />
     </div>

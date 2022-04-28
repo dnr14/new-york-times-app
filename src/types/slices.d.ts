@@ -1,3 +1,23 @@
+/* modalSlice */
+declare interface ModalSliceInit {
+  isOpen: boolean;
+  status: "open" | "close";
+  type: keyof ModalSliceInit["filter"];
+  filter: {
+    home: {
+      headlineKeyword: StringOrNull;
+      selectedDate: StringOrNull;
+      selectedCountrys: string[] | null;
+    };
+    scrap: {
+      headlineKeyword: StringOrNull;
+      selectedDate: StringOrNull;
+      selectedCountrys: string[] | null;
+    };
+  };
+}
+
+/* homdSlice */
 declare type StringOrNull = string | null;
 
 // 기사를 쓴 기자들 이름입니다.
@@ -41,6 +61,7 @@ declare type Doc = {
   web_url: string;
   word_count: number;
   _id: string;
+  isScrap: boolean;
 };
 
 declare type Meta = {
@@ -51,20 +72,36 @@ declare type Meta = {
 
 declare type StatusType = "loading" | "idle" | "success" | "failed";
 
+declare type HomeSliceError = {
+  isError: boolean;
+  message: StringOrNull;
+};
+
 declare interface HomeSliceInit {
   docs: Doc[];
   meta: Meta;
   page: number;
   status: StatusType;
   isLastPage: boolean;
+  isEmpty: boolean;
+  error: HomeSliceError;
 }
 
 declare interface FetchArticlesThunkPayload {
   page: number;
   beginDate: StringOrNull;
+  headlineKeyword: StringOrNull;
 }
 
 declare type CreateFetchArticlesPayloadFunc = (
   page: number,
-  beginDate?: StringOrNull
+  beginDate?: StringOrNull,
+  headlineKeyword?: StringOrNull
 ) => FetchArticlesThunkPayload;
+
+/* scrapSlice */
+declare interface ScrapSliceInit {
+  docs: Doc[];
+  page: number;
+  status: StatusType;
+}

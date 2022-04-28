@@ -1,10 +1,6 @@
 import { FC, memo } from "react";
 import styled from "styled-components";
 
-interface ErrorMessageProps {
-  text: string;
-}
-
 const ErrorMessage: FC<ErrorMessageProps> = ({ text }) => (
   <ErrorMessageWrapper>{text}</ErrorMessageWrapper>
 );

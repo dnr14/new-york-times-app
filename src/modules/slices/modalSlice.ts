@@ -26,6 +26,7 @@ export const setFilter = createAsyncThunk<boolean, SetFilterThunkPayload>(
 const initialState: ModalSliceInit = {
   isOpen: false,
   status: "close",
+  type: "home",
   filter: {
     home: {
       headlineKeyword: null,

@@ -1,3 +1,4 @@
+/* useInfinityScroll */
 declare type UseInfinityScrollFunc = (
   page: number,
   status: StatusType,
@@ -10,3 +11,8 @@ declare type HandleObserverFunc = (
 ) => void;
 
 declare type HandleObserver = (node: HTMLDivElement | null) => void;
+
+/* useThrottling */
+type ThrottlingFunc = (callback: () => void, delay?: number) => void;
+/* useDebounce */
+type DebounceFunc = (callback: () => void, delay?: number) => void;
