@@ -1,5 +1,9 @@
 import { memo, useCallback, useEffect, useRef } from "react";
-import { useAppDispatch, useTypedSelector } from "../modules/store";
+import {
+  useAppDispatch,
+  useModalTypeSelector,
+  useTypedSelector,
+} from "../modules/store";
 import {
   fetchArticles,
   createFetchArticlesPayload,
@@ -22,10 +26,8 @@ const Home = () => {
   const { page, status, isLastPage, isEmpty } = useTypedSelector(
     ({ home }) => home
   );
-  const { selectedDate, headlineKeyword } = useTypedSelector(
-    ({ modal }) => modal.filter.home
-  );
-  const { type } = useTypedSelector(({ modal }) => modal);
+  const { selectedDate, headlineKeyword, selectedCountrys } =
+    useModalTypeSelector("home");
   const scrapArticles = useTypedSelector(({ scrap }) => scrap.docs);
   const debounce = useDebounce();
   const dispatch = useAppDispatch();
@@ -34,7 +36,12 @@ const Home = () => {
     if (!isLastPage) {
       dispatch(
         fetchArticles(
-          createFetchArticlesPayload(page + 1, selectedDate, headlineKeyword)
+          createFetchArticlesPayload(
+            page + 1,
+            selectedDate,
+            headlineKeyword,
+            selectedCountrys
+          )
         )
       );
     }
@@ -70,11 +77,16 @@ const Home = () => {
       dispatch(setHomeSliceInit());
       dispatch(
         fetchArticles(
-          createFetchArticlesPayload(0, selectedDate, headlineKeyword)
+          createFetchArticlesPayload(
+            0,
+            selectedDate,
+            headlineKeyword,
+            selectedCountrys
+          )
         )
       );
     }
-  }, [selectedDate, firstRender, headlineKeyword, dispatch]);
+  }, [selectedDate, firstRender, headlineKeyword, selectedCountrys, dispatch]);
 
   useEffect(() => {
     /* API를 호출을 했는데 실패 시 스크롤을 top으로 조절합니다. */

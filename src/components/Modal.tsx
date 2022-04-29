@@ -25,44 +25,53 @@ import ErrorMessage from "./common/ErrorMessage";
 const Modal = () => {
   const [headLineKeyword, setHeadLineKeyword] = useState("");
   const [errors, setErrors] = useState<RegularExpressionErrorType>();
-  const [selectedCountrys, setSelectedCountrys] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedCountrys, setSelectedCountrys] = useState<
+    Set<CountryEnglNameType>
+  >(new Set());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const { type } = useTypedSelector(({ modal }) => modal);
   const filter = useTypedSelector(({ modal }) => modal.filter);
-
   const dispatch = useAppDispatch();
+
   const countrys: [Countrys, Countrys] = useMemo(
     () => [
       [
         {
           countryName: "대한민국",
+          countryEnglName: "south korea",
           width: "72px",
         },
         {
           countryName: "중국",
+          countryEnglName: "china",
         },
         {
           countryName: "일본",
+          countryEnglName: "japan",
         },
         {
           countryName: "미국",
+          countryEnglName: "usa",
         },
         {
           countryName: "북한",
+          countryEnglName: "north korea",
         },
       ],
       [
         {
           countryName: "러시아",
+          countryEnglName: "russia",
           width: "60px",
         },
         {
           countryName: "프랑스",
+          countryEnglName: "france",
           width: "60px",
         },
         {
           countryName: "영국",
+          countryEnglName: "united kingdom",
         },
       ],
     ],
@@ -74,10 +83,19 @@ const Modal = () => {
    * 2. 모달 상태 값을 변경 후 닫기
    */
   const handleFilterSubmit = () => {
+    function createHash(countrys: Set<CountryEnglNameType>) {
+      if (countrys.size === 0) return null;
+      return Array.from(countrys).reduce(
+        (acc, cur) => acc + cur.charCodeAt(0) + cur.charCodeAt(1),
+        0
+      );
+    }
+
     const filter: ModalFilter = {
       headlineKeyword: null,
       selectedCountrys: null,
       selectedDate: null,
+      selectedCountrysHash: createHash(selectedCountrys),
     };
 
     if (selectedDate !== null) {
@@ -89,7 +107,7 @@ const Modal = () => {
     if (selectedCountrys.size !== 0) {
       filter.selectedCountrys = Array.from(selectedCountrys);
     }
-    dispatch(setFilter(createSetFilterPayload(filter, "home")));
+    dispatch(setFilter(createSetFilterPayload(filter, type)));
   };
 
   /**
@@ -149,12 +167,12 @@ const Modal = () => {
    * 없다면 추가합니다.
    */
   const handleCountryOnClick = useCallback(
-    (countryName: string) => () => {
+    (countryEnglName: CountryEnglNameType) => () => {
       setSelectedCountrys((prevCountrys) => {
-        if (prevCountrys.has(countryName)) {
-          prevCountrys.delete(countryName);
+        if (prevCountrys.has(countryEnglName)) {
+          prevCountrys.delete(countryEnglName);
         } else {
-          prevCountrys.add(countryName);
+          prevCountrys.add(countryEnglName);
         }
         return new Set(prevCountrys);
       });
@@ -169,8 +187,8 @@ const Modal = () => {
 
         return (
           <ModalCountrysWrapper key={row_idx} width={width}>
-            {row.map(({ countryName, width }, col_idx) => {
-              const className = selectedCountrys.has(countryName)
+            {row.map(({ countryName, width, countryEnglName }, col_idx) => {
+              const className = selectedCountrys.has(countryEnglName)
                 ? "selected"
                 : undefined;
 
@@ -178,7 +196,7 @@ const Modal = () => {
                 <CountryWrapper
                   key={col_idx}
                   width={width}
-                  onClick={handleCountryOnClick(countryName)}
+                  onClick={handleCountryOnClick(countryEnglName)}
                   className={className}
                 >
                   <Country className={className}>{countryName}</Country>
@@ -192,7 +210,7 @@ const Modal = () => {
   );
 
   useEffect(() => {
-    const { headlineKeyword, selectedDate, selectedCountrys } = filter["home"];
+    const { headlineKeyword, selectedDate, selectedCountrys } = filter[type];
 
     if (headlineKeyword !== null) {
       setHeadLineKeyword(headlineKeyword);
@@ -203,7 +221,7 @@ const Modal = () => {
     if (selectedCountrys !== null) {
       setSelectedCountrys(new Set(selectedCountrys));
     }
-  }, [filter]);
+  }, [filter, type]);
 
   return (
     <>

@@ -67,7 +67,11 @@ const http: HTTPMethod = {
     }
   },
 };
-
+/**
+ * 왜 이렇게 사용했는지 의도를 말해보자.
+ * @param error
+ * @returns
+ */
 export const errorHandler = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     return new Error(error.message);

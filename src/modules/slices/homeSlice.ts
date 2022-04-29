@@ -11,14 +11,47 @@ const createError = ({ message }: Error): HomeSliceError => ({
   message,
 });
 
-const createEndPoint = (
-  page: number,
-  beginDate: StringOrNull,
-  headlineKeyword: StringOrNull
+const createEndPoint: CreateEndPointFunc = (
+  page,
+  beginDate,
+  headlineKeyword,
+  selectedCountrys
 ) => {
-  let url = `${BASE_URL}&page=${page}&sort=oldest`;
+  const removeSearchWord = (
+    cur: CountryEnglNameType,
+    target: CountryEnglNameType,
+    soruce: CountryEnglNameType,
+    countrys: CountryEnglNameType[]
+  ) => cur === target && !countrys.some((country) => country === soruce);
+
+  let url = `${BASE_URL}&page=${page}`;
   if (beginDate) url += `&begin_date=${beginDate.replace(/\./gi, "")}`;
-  if (headlineKeyword) url += `&fq=headline:(${headlineKeyword})`;
+  if (headlineKeyword) url += `&fq=headline:("${headlineKeyword}")`;
+  if (selectedCountrys) {
+    url += selectedCountrys.reduce((acc, cur, idx, _this) => {
+      acc += !headlineKeyword && !idx ? "&fq=" : " OR ";
+      acc += `glocations:("${cur}")`;
+
+      /*
+       * 대한민국, 북한이 같이 선택되지 않았다면 검색에서 제외시켜야됩니다.
+       * glocations 필드에서 "north korea"가 아닌 "south korea"라는 단어를 검색하tpd
+       * 대한민국만 있다면 glocations:("south korea") -glocations:("north korea")
+       * 대한민국만 있다면 glocations:("north korea") -glocations:("south korea")
+       */
+      if (removeSearchWord(cur, "south korea", "north korea", _this))
+        acc += ' -glocations:("north korea")';
+      else if (removeSearchWord(cur, "north korea", "south korea", _this))
+        acc += ' -glocations:("south korea")';
+
+      return acc;
+    }, "");
+  }
+
+  /*
+   * 1. 선택된 날짜가 없으면 최신순으로 보여줍니다.
+   * 2. 선택된 날짜는 있으면 오래된 순으로 보여줍니다.
+   */
+  url += `&sort=${beginDate ? "oldest" : "newest"}`;
   return `${url}`;
 };
 
@@ -32,11 +65,13 @@ const isLast = (offset: number, hits: number) => {
 export const createFetchArticlesPayload: CreateFetchArticlesPayloadFunc = (
   page,
   beginDate = null,
-  headlineKeyword = null
+  headlineKeyword = null,
+  selectedCountrys = null
 ) => ({
   page,
   beginDate,
   headlineKeyword,
+  selectedCountrys,
 });
 
 /**
@@ -47,10 +82,13 @@ export const fetchArticles = createAsyncThunk<
   FetchArticlesThunkPayload
 >(
   `${NAME}/GET/ARTICLES`,
-  async ({ page, beginDate, headlineKeyword }, { rejectWithValue }) => {
+  async (
+    { page, beginDate, headlineKeyword, selectedCountrys },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await http.get<HomeSliceInit>(
-        createEndPoint(page, beginDate, headlineKeyword)
+        createEndPoint(page, beginDate, headlineKeyword, selectedCountrys)
       );
       return response;
     } catch (error) {

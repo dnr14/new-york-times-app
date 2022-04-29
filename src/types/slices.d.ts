@@ -1,19 +1,27 @@
 /* modalSlice */
+
+/*
+ * headlineKeyword : 헤드라인 검색어
+ * selectedDate : 선택한 날짜
+ * selectedCountrys : 선택한 국가
+ * selectedCountrysHash : 선택한 국가들에 2번째 문자열의 아스키 코드 합
+ */
+interface Filter {
+  headlineKeyword: StringOrNull;
+  selectedDate: StringOrNull;
+  selectedCountrys: CountryEnglNameType[] | null;
+  selectedCountrysHash: number | null;
+}
+
+declare type ModalFilterType = keyof ModalSliceInit["filter"];
+
 declare interface ModalSliceInit {
   isOpen: boolean;
   status: "open" | "close";
-  type: keyof ModalSliceInit["filter"];
+  type: ModalFilterType;
   filter: {
-    home: {
-      headlineKeyword: StringOrNull;
-      selectedDate: StringOrNull;
-      selectedCountrys: string[] | null;
-    };
-    scrap: {
-      headlineKeyword: StringOrNull;
-      selectedDate: StringOrNull;
-      selectedCountrys: string[] | null;
-    };
+    home: Filter;
+    scrap: Filter;
   };
 }
 
@@ -32,23 +40,34 @@ interface Person {
   title: StringOrNull;
 }
 
+interface Byline {
+  organization: StringOrNull;
+  original: StringOrNull;
+  person: Person[];
+}
+
+interface Headline {
+  content_kicker: StringOrNull;
+  kicker: StringOrNull;
+  main: StringOrNull;
+  name: StringOrNull;
+  print_headline: StringOrNull;
+  seo: StringOrNull;
+  sub: StringOrNull;
+}
+
+interface Keywords {
+  name: string;
+  value: string;
+  rank: number;
+  major: string;
+}
+
 declare type Doc = {
   abstract: string;
   document_type: string;
-  byline: {
-    organization: StringOrNull;
-    original: StringOrNull;
-    person: Person[];
-  };
-  headline: {
-    content_kicker: StringOrNull;
-    kicker: StringOrNull;
-    main: StringOrNull;
-    name: StringOrNull;
-    print_headline: StringOrNull;
-    seo: StringOrNull;
-    sub: StringOrNull;
-  };
+  byline: Byline;
+  headline: Headline;
   news_desk: string;
   print_page: string;
   print_section: string;
@@ -62,6 +81,7 @@ declare type Doc = {
   word_count: number;
   _id: string;
   isScrap: boolean;
+  keywords: Keywords[];
 };
 
 declare type Meta = {
@@ -91,12 +111,20 @@ declare interface FetchArticlesThunkPayload {
   page: number;
   beginDate: StringOrNull;
   headlineKeyword: StringOrNull;
+  selectedCountrys: CountryEnglNameType[] | null;
 }
+declare type CreateEndPointFunc = (
+  page: number,
+  beginDate: StringOrNull,
+  headlineKeyword: StringOrNull,
+  selectedCountrys: CountryEnglNameType[] | null
+) => string;
 
 declare type CreateFetchArticlesPayloadFunc = (
   page: number,
   beginDate?: StringOrNull,
-  headlineKeyword?: StringOrNull
+  headlineKeyword?: StringOrNull,
+  selectedCountrys?: CountryEnglNameType[] | null
 ) => FetchArticlesThunkPayload;
 
 /* scrapSlice */

@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import Empty from "./common/Empty";
 import { Link } from "react-router-dom";
+import { FC, memo } from "react";
 
-const ScrapEmty = () => {
+const ScrapEmty: FC<Pick<EmptyProps, "text">> = ({ text }) => {
   return (
-    <Empty text="저장된 스크랩이 없습니다." top="40%">
+    <Empty text={text} top="40%">
       <ScrapButton>
         <CustomLink to={"/"}>
           <ScrapText>스크랩 하러 가기</ScrapText>
@@ -41,4 +42,4 @@ const ScrapText = styled.span`
   color: #ffffff;
 `;
 
-export default ScrapEmty;
+export default memo(ScrapEmty);

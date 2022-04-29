@@ -8,32 +8,37 @@ import { useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { setPage } from "../modules/slices/scrapSlice";
 import { SCROLL_TOP, setYOffset } from "../modules/slices/scrollSlice";
+import { setModalType } from "../modules/slices/modalSlice";
 
 const Footer = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const HOME_PATH = useMemo(() => "/", []) as "/";
-  const SCRAP_PATH = useMemo(() => "/scrap", []) as "/scrap";
+  const HOME_PATH = useMemo<RoutePath>(() => "/", []);
+  const SCRAP_PATH = useMemo<RoutePath>(() => "/scrap", []);
+  const CLASS_NAME = useMemo(() => "active", []);
 
   const handleClick = useCallback(
-    (path: typeof HOME_PATH | typeof SCRAP_PATH) => () => {
+    (path: RoutePath) => () => {
+      const isHome = path === HOME_PATH;
       dispatch(setYOffset(SCROLL_TOP));
-      if (path === HOME_PATH) dispatch(setPage(1));
+
+      if (isHome) dispatch(setPage(1));
+
+      dispatch(setModalType(isHome ? "home" : "scrap"));
       navigate(path);
     },
     [dispatch, navigate, HOME_PATH]
   );
 
+  const _homeImg = pathname === HOME_PATH ? homeFillImg : homeImg;
+
   return (
     <FooterContainer>
       <HomeButton onClick={handleClick(HOME_PATH)}>
-        <HomeFill
-          src={pathname === HOME_PATH ? homeFillImg : homeImg}
-          alt="homeFillImg"
-        />
-        <HomeText className={pathname === HOME_PATH ? "active" : ""}>
+        <HomeFill src={_homeImg} alt="homeFillImg" />
+        <HomeText className={pathname === HOME_PATH ? CLASS_NAME : ""}>
           홈
         </HomeText>
       </HomeButton>
@@ -42,7 +47,7 @@ const Footer = () => {
           src={pathname === SCRAP_PATH ? sheetLineFillImg : sheetLineImg}
           alt="sheetLineImg"
         />
-        <SheetText className={pathname === SCRAP_PATH ? "active" : ""}>
+        <SheetText className={pathname === SCRAP_PATH ? CLASS_NAME : ""}>
           스크랩
         </SheetText>
       </SheetButton>

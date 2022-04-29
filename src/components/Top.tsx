@@ -11,10 +11,22 @@ import { openCloseModal } from "../modules/slices/modalSlice";
 import { useCallback } from "react";
 import useThrottling from "../hooks/useThrottling";
 
+const COUNTRY_ENUM: CountryNames = {
+  "south korea": "대한민국",
+  china: "중국",
+  japan: "일본",
+  usa: "미국",
+  "north korea": "북한",
+  russia: "러시아",
+  france: "프랑스",
+  "united kingdom": "영국",
+};
+
 const Top = () => {
   const throttling = useThrottling();
   const dispatch = useAppDispatch();
   const filter = useTypedSelector(({ modal }) => modal.filter);
+  const { type } = useTypedSelector(({ modal }) => modal);
 
   /**
    * 유저가 빠르게 눌러서 디스패치가 여러번 실행되는걸 방지하기 위해서입니다.
@@ -23,7 +35,7 @@ const Top = () => {
     throttling(() => dispatch(openCloseModal(true)), 200);
   }, [throttling, dispatch]);
 
-  const dataTransformation = (filter: ModalFilter) => {
+  const dataTransformation = useCallback((filter: ModalFilter) => {
     const CLASS_NAME = "selected";
 
     const headlineKeyword: FilterData = {
@@ -55,10 +67,11 @@ const Top = () => {
     }
     if (filter.selectedCountrys !== null) {
       selectedCountrys.className = CLASS_NAME;
-      let text = `${filter.selectedCountrys[0]}`;
+      let text = `${COUNTRY_ENUM[filter.selectedCountrys[0]]}`;
 
-      if (filter.selectedCountrys.length > 1)
+      if (filter.selectedCountrys.length > 1) {
         text += ` 외 ${filter.selectedCountrys.length - 1}`;
+      }
       selectedCountrys.text = text;
     }
 
@@ -67,10 +80,10 @@ const Top = () => {
       selectedDate,
       selectedCountrys,
     };
-  };
+  }, []);
 
   const { headlineKeyword, selectedCountrys, selectedDate } =
-    dataTransformation(filter["home"]);
+    dataTransformation(filter[type]);
 
   return (
     <header>

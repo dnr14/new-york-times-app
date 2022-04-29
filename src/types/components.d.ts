@@ -13,9 +13,25 @@ declare interface ArticleProps extends Partial<Doc> {
 declare interface ModalStyleProps {
   width?: string;
 }
+
+declare interface CountryNames {
+  "south korea": "대한민국";
+  china: "중국";
+  japan: "일본";
+  usa: "미국";
+  "north korea": "북한";
+  russia: "러시아";
+  france: "프랑스";
+  "united kingdom": "영국";
+}
+
+declare type CountryNameType = CountryNames[keyof CountryNames];
+declare type CountryEnglNameType = keyof CountryNames;
+
 declare interface CountryProps {
-  countryName: string;
   width?: string;
+  countryName: CountryNameType;
+  countryEnglName: CountryEnglNameType;
 }
 /* ModalInputTitle */
 declare interface ModalInputTitleProps {
@@ -51,3 +67,5 @@ declare interface FilterData {
   text: string;
   img: string;
 }
+/* Footer */
+declare type RoutePath = "/" | "/scrap";

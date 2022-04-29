@@ -9,6 +9,7 @@ import useThrottling from "./hooks/useThrottling";
 import { useAppDispatch, useTypedSelector } from "./modules/store";
 import { useEffect, useRef } from "react";
 import { SCROLL_TOP, setYOffset } from "./modules/slices/scrollSlice";
+import ScrapEmty from "./components/ScrapEmty";
 
 function App() {
   const { isOpen } = useTypedSelector(({ modal }) => modal);
@@ -44,6 +45,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/scrap" element={<Scrap />} />
+          <Route
+            path="*"
+            element={<ScrapEmty text="없는 페이지 입니다. 😅" />}
+          />
         </Routes>
       </Main>
       <Footer />

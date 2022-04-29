@@ -8,6 +8,7 @@ import useInfinityScroll from "../hooks/useInfinityScroll";
 import useDebounce from "../hooks/useDebounce";
 import { getScrapArticles } from "../modules/slices/scrapSlice";
 import Progress from "../components/common/Progress";
+import moment from "moment";
 
 const Scrap = () => {
   const {
@@ -15,6 +16,11 @@ const Scrap = () => {
     page,
     status,
   } = useTypedSelector(({ scrap }) => scrap);
+  const { selectedDate, headlineKeyword, selectedCountrys } = useTypedSelector(
+    ({ modal }) => modal.filter.scrap,
+    /* 배열에 들어있는 문자열의 아스키코드 합이 동일하다면 랜더링을 하지 않습니다. */
+    (befor, after) => befor.selectedCountrysHash === after.selectedCountrysHash
+  );
 
   const dispatch = useAppDispatch();
   const debounce = useDebounce();
@@ -32,12 +38,26 @@ const Scrap = () => {
     [dispatch, debounce]
   );
 
+  // 일단 날짜와 키워드 검색으로해보자.
+  const setArticlesFilter = (doc: Doc) => {
+    let isTrue = true;
+    // console.log(selectedDate);
+
+    // console.log(doc.pub_date.match(selectedDate ?? moment().toLocaleString()));
+
+    // if (!doc.pub_date.match(selectedDate ?? moment().toLocaleString())) {
+    //   isTrue = false;
+    // }
+    return isTrue;
+  };
+
   return (
     <>
       <Progress isLoading={status === "loading"} />
       {articles.length ? (
         articles
           .slice(0, page * 10)
+          .filter(setArticlesFilter)
           .map(
             (
               { _id, headline, byline, pub_date, source, web_url, isScrap },
@@ -59,7 +79,7 @@ const Scrap = () => {
             )
           )
       ) : (
-        <ScrapEmty />
+        <ScrapEmty text="저장된 스크랩이 없습니다." />
       )}
     </>
   );

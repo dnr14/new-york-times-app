@@ -32,11 +32,13 @@ const initialState: ModalSliceInit = {
       headlineKeyword: null,
       selectedDate: null,
       selectedCountrys: null,
+      selectedCountrysHash: null,
     },
     scrap: {
       headlineKeyword: null,
       selectedDate: null,
       selectedCountrys: null,
+      selectedCountrysHash: null,
     },
   },
 };
@@ -47,17 +49,26 @@ const modalSlice = createSlice({
   reducers: {
     openCloseModal: (state, { payload }: PayloadAction<boolean>) => {
       state.isOpen = payload;
-      if (payload) state.status = "open";
-      else state.status = "close";
+      state.status = payload ? "open" : "close";
+    },
+    setModalType: (state, { payload }: PayloadAction<ModalFilterType>) => {
+      state.type = payload;
     },
     saveFilterData: (
       state,
       { payload }: PayloadAction<SetFilterThunkPayload>
     ) => {
-      const { headlineKeyword, selectedCountrys, selectedDate, type } = payload;
+      const {
+        headlineKeyword,
+        selectedCountrys,
+        selectedDate,
+        type,
+        selectedCountrysHash,
+      } = payload;
       state.filter[type].headlineKeyword = headlineKeyword;
       state.filter[type].selectedDate = selectedDate;
       state.filter[type].selectedCountrys = selectedCountrys;
+      state.filter[type].selectedCountrysHash = selectedCountrysHash;
     },
   },
   extraReducers: (builder) => {
@@ -67,5 +78,6 @@ const modalSlice = createSlice({
     });
   },
 });
-export const { openCloseModal, saveFilterData } = modalSlice.actions;
+export const { openCloseModal, saveFilterData, setModalType } =
+  modalSlice.actions;
 export default modalSlice;
