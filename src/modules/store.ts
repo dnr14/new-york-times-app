@@ -25,7 +25,6 @@ export const useModalTypeSelector = (type: ModalFilterType) =>
   useTypedSelector(
     ({ modal }) => modal.filter[type],
     (befor, after) => {
-      /* false가 새로운 랜더링 true 비 랜더링*/
       let isTrue = true;
       if (isTrue && befor.headlineKeyword !== after.headlineKeyword) {
         isTrue = false;

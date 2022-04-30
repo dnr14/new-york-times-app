@@ -3,6 +3,12 @@ import star from "../assets/images/main/Star.svg";
 import starFill from "../assets/images/main/StarFill.svg";
 import { forwardRef, memo } from "react";
 import moment from "moment";
+import {
+  createFlexBox,
+  themeBackgroundGrayTwo,
+  themeColorBlack,
+  themeColorDeepGray,
+} from "../assets/styles/theme";
 
 const Article = forwardRef<HTMLDivElement, ArticleProps>(
   (
@@ -41,22 +47,17 @@ const Article = forwardRef<HTMLDivElement, ArticleProps>(
 );
 
 const ArticleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start", "column")}
   padding: 10px 20px;
   width: 335px;
   height: 104px;
-  background: #fefefe;
+  background: ${themeBackgroundGrayTwo};
   border-radius: 8px;
   gap: 8px;
 `;
 
 const ArticleTitleWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
+  ${createFlexBox("space-between", "flex-start")};
   width: 295px;
   height: 55px;
   gap: 11px;
@@ -70,15 +71,13 @@ const TitleText = styled.a`
   font-size: 14px;
   line-height: 28px;
   letter-spacing: -0.05em;
-  color: #000000;
+  color: ${themeColorBlack};
 `;
 
 /* 스크랩 유무 스타 래퍼 */
 const StarImgWrapper = styled.div`
   cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start")};
   padding: 4px;
   width: 24px;
   height: 24px;
@@ -97,18 +96,14 @@ const StarImg = styled.img`
 
 /* 기사에 대한 추가 정보 컨테이너 */
 const ArticleBottomContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  ${createFlexBox("space-between", "flex-start")};
   width: 295px;
   height: 20px;
 `;
 
 /* 기사에 대한 추가 왼쪽 래퍼 */
 const ArticleLeftWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
+  ${createFlexBox("", "flex-start")};
   align-items: flex-start;
   width: 200px;
   height: 20px;
@@ -116,9 +111,7 @@ const ArticleLeftWrapper = styled.div`
 `;
 /* 기사에 대한 추가 오른쪽 래퍼 */
 const ArticleRightWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start")};
   width: 85px;
   height: 20px;
 `;
@@ -130,7 +123,7 @@ const DateText = styled.span`
   font-size: 13px;
   line-height: 20px;
   letter-spacing: -0.05em;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
 `;
 /* 기사가 작성된 신문사 텍스트 */
 const NewspaperText = styled.span`
@@ -140,7 +133,7 @@ const NewspaperText = styled.span`
   font-size: 13px;
   line-height: 20px;
   letter-spacing: -0.05em;
-  color: #000000;
+  color: ${themeColorBlack};
 `;
 
 /* 기사를 작성한 기자 이름 텍스트 */
@@ -151,7 +144,7 @@ const ReportNameText = styled.span`
   font-size: 13px;
   line-height: 20px;
   letter-spacing: -0.05em;
-  color: #000000;
+  color: ${themeColorBlack};
 `;
 
 export default memo(Article);

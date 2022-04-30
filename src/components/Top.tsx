@@ -10,6 +10,14 @@ import { useAppDispatch, useTypedSelector } from "../modules/store";
 import { openCloseModal } from "../modules/slices/modalSlice";
 import { useCallback } from "react";
 import useThrottling from "../hooks/useThrottling";
+import {
+  createFlexBox,
+  themeColorBlack,
+  themeColorBlue,
+  themeColorDeepGray,
+  themeColorGray,
+  themeColorWhite,
+} from "../assets/styles/theme";
 
 const COUNTRY_ENUM: CountryNames = {
   "south korea": "대한민국",
@@ -122,7 +130,7 @@ const UnderLine = styled.div`
   width: 375px;
   height: 1px;
   top: 104px;
-  background: #c4c4c4;
+  background: ${themeColorGray};
 `;
 
 const StatusBarContainer = styled.div`
@@ -131,7 +139,7 @@ const StatusBarContainer = styled.div`
   left: 0px;
   right: 0px;
   top: 0px;
-  background: rgba(255, 255, 255, 1);
+  background: ${themeColorWhite};
   border-top-left-radius: 30px;
   border-top-right-radius: 30px;
 `;
@@ -142,16 +150,12 @@ const TimeWrapper = styled.span`
   height: 18px;
   left: 29.5px;
   top: calc(50% - 18px / 2 + 1px);
-
-  font-family: "SF Pro Text";
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
   line-height: 18px;
-
   letter-spacing: -0.165px;
-
-  color: #000000;
+  color: ${themeColorBlack};
 `;
 
 const IconWrapper = styled.div`
@@ -169,7 +173,7 @@ const FilterContainer = styled.nav`
   width: 375px;
   height: 60px;
   top: 44px;
-  background: rgba(255, 255, 255, 1);
+  background: ${themeColorWhite};
 `;
 
 const FilterGroup = styled.div`
@@ -180,34 +184,28 @@ const FilterGroup = styled.div`
   top: 13px;
   font-size: 12px;
   & .selected {
-    border-color: #3478f6;
+    border-color: ${themeColorBlue};
     & span {
-      color: #3478f6;
+      color: ${themeColorBlue};
     }
   }
 `;
 
 const CategorysWrppaer = styled.div`
   position: absolute;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
   height: 34px;
+  ${createFlexBox("center", "center")};
   gap: 7px;
 `;
 /* 헤드 라인 */
 const HeadLineFilterWrapper = styled.div`
   cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  ${createFlexBox("center", "center")};
   padding: 5px 12px;
   gap: 4px;
   width: 117px;
   height: 34px;
-  border: 1px solid #c4c4c4;
+  border: 1px solid ${themeColorGray};
   box-sizing: border-box;
   border-radius: 30px;
   order: 1;
@@ -227,7 +225,7 @@ const HeadLineText = styled.span`
   line-height: 24px;
   text-align: center;
   letter-spacing: -0.04em;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -236,15 +234,12 @@ const HeadLineText = styled.span`
 /* 전체 날짜 */
 const DateFilterWrapper = styled.div`
   cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  ${createFlexBox("center", "center")};
   padding: 5px 12px;
   gap: 4px;
   min-width: 94px;
   height: 34px;
-  border: 1px solid #c4c4c4;
+  border: 1px solid ${themeColorGray};
   box-sizing: border-box;
   border-radius: 30px;
   order: 2;
@@ -264,19 +259,16 @@ const DateText = styled.span`
   line-height: 24px;
   text-align: center;
   letter-spacing: -0.04em;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
 `;
 
 /* 전체 국가 */
 const CountrysFilterWrapper = styled.div`
   cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  ${createFlexBox("center", "center")};
   padding: 5px 12px;
   height: 34px;
-  border: 1px solid #c4c4c4;
+  border: 1px solid ${themeColorGray};
   box-sizing: border-box;
   border-radius: 30px;
   order: 3;
@@ -288,7 +280,7 @@ const CountryText = styled.span`
   font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.04em;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
   flex: none;
   order: 0;
   flex-grow: 0;

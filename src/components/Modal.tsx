@@ -12,10 +12,19 @@ import {
   errorMessages,
   isHtmlTag,
   isMaxLength,
+  isSpecialChracters,
   RegularExpressionError,
   RegularExpressionErrorType,
 } from "../utils/validation";
 import ErrorMessage from "./common/ErrorMessage";
+import {
+  createFlexBox,
+  themeBackgroundBlue,
+  themeBorderGray,
+  themeColorBlue,
+  themeColorDeepGray,
+  themeColorWhite,
+} from "../assets/styles/theme";
 
 /***
  * 해야될 일
@@ -114,19 +123,28 @@ const Modal = () => {
    * 헤드라인 키워드 유효성 검사
    * HTML태그 형태로 들어오는지 체크합니다.
    * 최대 100자로 제한합니다.
+   * 특수문자가 포함 되었는지 체크합니다.
    */
   const handleHeadLineValidation = (value: string) => {
     const HEAD_LINE_KEYWORD_MAX_LENGTH = 100;
     const HEAD_LINE_ID = "headline";
 
     try {
-      if (isHtmlTag(value))
+      if (isHtmlTag(value)) {
         throw new RegularExpressionError(HEAD_LINE_ID, errorMessages.NOT_HTML);
-      if (isMaxLength(value, HEAD_LINE_KEYWORD_MAX_LENGTH))
+      }
+      if (isMaxLength(value, HEAD_LINE_KEYWORD_MAX_LENGTH)) {
         throw new RegularExpressionError(
           HEAD_LINE_ID,
           `${errorMessages.MAX_LENGTH} 최대 ${HEAD_LINE_KEYWORD_MAX_LENGTH} 입니다.`
         );
+      }
+      if (isSpecialChracters(value)) {
+        throw new RegularExpressionError(
+          HEAD_LINE_ID,
+          `${errorMessages.SPECIAL_CHAR}`
+        );
+      }
 
       return true;
     } catch (error) {
@@ -269,9 +287,6 @@ const ModalBackdrop = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   padding: 20px;
   position: absolute;
   width: 335px;
@@ -280,22 +295,18 @@ const ModalContainer = styled.div`
   top: 166px;
   background: #ffffff;
   border-radius: 16px;
+  ${createFlexBox("", "flex-start", "column")};
   gap: 40px;
 `;
 
 const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start", "column")};
   width: 295px;
   gap: 8px;
 `;
 
 const ModalInput = styled.input`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  ${createFlexBox("space-between", "center")};
   padding: 10px 20px;
   width: 295px;
   height: 44px;
@@ -313,18 +324,14 @@ const ModalInput = styled.input`
 `;
 
 const ModalCountrysContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start", "column")};
   width: 295px;
   height: 76px;
   gap: 8px;
 `;
 
 const ModalCountrysWrapper = styled.div<Pick<ModalStyleProps, "width">>`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  ${createFlexBox("", "flex-start")};
   height: 34px;
   gap: 8px;
   ${({ width }) => css`
@@ -333,27 +340,23 @@ const ModalCountrysWrapper = styled.div<Pick<ModalStyleProps, "width">>`
 `;
 
 const CountryWrapper = styled.div<Pick<ModalStyleProps, "width">>`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
   padding: 6px 12px 4px;
   height: 34px;
-  border: 1px solid #f2f2f2;
   box-sizing: border-box;
   border-radius: 30px;
   cursor: pointer;
+  ${createFlexBox("center", "center")};
+  border: 1px solid ${themeBorderGray};
   ${({ width }) => css`
     width: ${width ?? "48px"};
   `}
   &.selected {
-    background-color: #82b0f4;
-    border: 1px solid #f2f2f2;
+    background-color: ${themeBackgroundBlue};
+    border: 1px solid ${themeBorderGray};
   }
 `;
 
 const Country = styled.span`
-  font-family: "Apple SD Gothic Neo";
   font-style: normal;
   font-weight: 400;
   font-size: 11px;
@@ -361,17 +364,17 @@ const Country = styled.span`
   height: 24px;
   text-align: center;
   letter-spacing: -0.04em;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
   width: 100%;
   &.selected {
-    color: #ffffff;
+    color: ${themeColorWhite};
   }
 `;
 
 const ModalSubmitButton = styled.div`
   width: 295px;
   height: 60px;
-  background: #3478f6;
+  background: ${themeColorBlue};
   border-radius: 16px;
   cursor: pointer;
 `;
@@ -387,7 +390,7 @@ const SubmitText = styled.div`
   line-height: 24px;
   text-align: center;
   letter-spacing: -0.05em;
-  color: #ffffff;
+  color: ${themeColorWhite};
 `;
 
 export default Modal;

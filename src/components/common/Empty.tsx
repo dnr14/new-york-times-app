@@ -1,6 +1,7 @@
 import { FC } from "react";
 import styled, { css } from "styled-components";
 import unionImg from "../../assets/images/empty/Union.svg";
+import { createFlexBox, themeColorDeepGray } from "../../assets/styles/theme";
 
 const Empty: FC<EmptyProps> = ({ text, top, children }) => {
   return (
@@ -15,10 +16,7 @@ const Empty: FC<EmptyProps> = ({ text, top, children }) => {
 };
 
 const EmptyContainer = styled.div<Pick<EmptyProps, "top">>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  ${createFlexBox("center", "center", "column")};
   position: absolute;
   width: 295px;
   height: 152px;
@@ -30,10 +28,7 @@ const EmptyContainer = styled.div<Pick<EmptyProps, "top">>`
 `;
 
 const TextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  ${createFlexBox("center", "center", "column")};
   width: 174px;
   height: 72px;
   order: 0;
@@ -49,7 +44,7 @@ const Text = styled.div`
   line-height: 28px;
   letter-spacing: -0.05em;
   text-transform: uppercase;
-  color: #6d6d6d;
+  color: ${themeColorDeepGray};
   order: 1;
   text-align: center;
 `;

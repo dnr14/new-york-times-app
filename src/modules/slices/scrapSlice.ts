@@ -21,7 +21,9 @@ const scrapSlice = createSlice({
   name: NAME,
   reducers: {
     addScrap: (state, { payload }: PayloadAction<Doc>) => {
-      state.docs = state.docs.concat(payload);
+      state.docs = state.docs
+        .concat(payload)
+        .sort((a, b) => (a.pub_date < b.pub_date ? 1 : -1));
     },
     deleteScrap: (state, { payload }: PayloadAction<string>) => {
       const newDocs = state.docs.filter((doc) => doc._id !== payload);

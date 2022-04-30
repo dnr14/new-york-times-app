@@ -99,23 +99,28 @@ export const fetchArticles = createAsyncThunk<
 
 export const setScrap = createAsyncThunk<void, string, ThunkApi>(
   `${NAME}/SET_SCRAP`,
-  (_id, { getState, dispatch }) => {
+  async (_id, { getState, dispatch }) => {
     const findDoc = (doc: Doc) => doc._id === _id;
 
     const { scrap, home } = getState();
     if (scrap.docs.some(findDoc)) {
       /* 스크랩에 값이 있다면 삭제합니다. */
       dispatch(deleteScrap(_id));
+      dispatch(setScrapStatus("remove"));
     } else {
       /* 스크랩에 값이 없다면 추가합니다. */
-      // 기사는 분명히 있는데 프로그래밍 관점에서는 없다고 볼 수 있다. 생각해서 개선해보자.
       const doc = home.docs.find(findDoc);
       if (doc) {
         dispatch(addScrap({ ...doc, isScrap: true }));
+        dispatch(setScrapStatus("add"));
       }
     }
-    // homeDocs의 스크랩 유무는 scrapDocs에 유무에 따라 찍으면 된다.
-    // dispatch(setIsScrap(_id));
+
+    /* add => idle */
+    /* remove => idle */
+    /* 상태가 바로 변하는걸 방지하기위해 딜레이를 주었습니다. */
+    const delay = (time: number) => new Promise((res) => setTimeout(res, time));
+    await delay(1000);
   }
 );
 
@@ -134,6 +139,7 @@ const initialState: HomeSliceInit = {
     isError: false,
     message: null,
   },
+  scrapStatus: "idle",
 };
 
 const homeSlice = createSlice({
@@ -151,11 +157,8 @@ const homeSlice = createSlice({
     setApiStatus: (state, { payload }: PayloadAction<StatusType>) => {
       state.status = payload;
     },
-    // 제거할지 생각해보자.
-    setIsScrap: (state, { payload }: PayloadAction<string>) => {
-      state.docs = state.docs.map((doc) =>
-        doc._id === payload ? { ...doc, isScrap: !doc.isScrap } : doc
-      );
+    setScrapStatus: (state, { payload }: PayloadAction<ScrapStatus>) => {
+      state.scrapStatus = payload;
     },
   },
   extraReducers: (builder) => {
@@ -183,9 +186,13 @@ const homeSlice = createSlice({
       .addCase(fetchArticles.rejected, (state, { payload }) => {
         if (payload instanceof Error) state.error = createError(payload);
         state.status = "failed";
+      })
+      .addCase(setScrap.fulfilled, (state) => {
+        state.scrapStatus = "idle";
       });
   },
 });
 
-export const { setHomeSliceInit, setApiStatus, setIsScrap } = homeSlice.actions;
+export const { setHomeSliceInit, setApiStatus, setScrapStatus } =
+  homeSlice.actions;
 export default homeSlice;

@@ -91,6 +91,7 @@ declare type Meta = {
 };
 
 declare type StatusType = "loading" | "idle" | "success" | "failed";
+declare type ScrapStatus = "remove" | "add" | "idle";
 
 declare type HomeSliceError = {
   isError: boolean;
@@ -105,6 +106,7 @@ declare interface HomeSliceInit {
   isLastPage: boolean;
   isEmpty: boolean;
   error: HomeSliceError;
+  scrapStatus: ScrapStatus;
 }
 
 declare interface FetchArticlesThunkPayload {

@@ -69,3 +69,7 @@ declare interface FilterData {
 }
 /* Footer */
 declare type RoutePath = "/" | "/scrap";
+declare type ButtonTextProps = {
+  left?: string;
+  right?: string;
+};
