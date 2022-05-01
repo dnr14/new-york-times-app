@@ -28,3 +28,8 @@ declare interface PopUpProps {
   children: React.ReactNode;
   className?: ClassColors;
 }
+/* ArticleSkeleton */
+declare interface ArticleSkeletonProps {
+  width: number;
+  height: number;
+}

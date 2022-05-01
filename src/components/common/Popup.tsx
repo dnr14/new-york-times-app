@@ -53,7 +53,6 @@ const Popup: FC<PopUpProps> = ({
     const cleanUp = () => {
       if (autoClose) clearTimeout(timer);
     };
-
     return cleanUp;
   }, [closeDelay, autoClose]);
 

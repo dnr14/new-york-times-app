@@ -125,7 +125,7 @@ const Modal = () => {
    * 최대 100자로 제한합니다.
    * 특수문자가 포함 되었는지 체크합니다.
    */
-  const handleHeadLineValidation = (value: string) => {
+  const handleHeadLineValidation = useCallback((value: string) => {
     const HEAD_LINE_KEYWORD_MAX_LENGTH = 100;
     const HEAD_LINE_ID = "headline";
 
@@ -151,7 +151,7 @@ const Modal = () => {
       if (error instanceof RegularExpressionError) setErrors(error.getError());
       return false;
     }
-  };
+  }, []);
 
   /**
    * 헤드라인 입력 받으면 실시간으로 값을 동기화 시킵니다.
@@ -163,7 +163,7 @@ const Modal = () => {
         handleHeadLineValidation(value) ? value : prevHeadLineKeyword
       );
     },
-    []
+    [handleHeadLineValidation]
   );
 
   /*
