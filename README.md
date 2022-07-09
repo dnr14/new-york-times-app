@@ -1,6 +1,4 @@
-## New York Time Api Test
-
----
+# New York Time Api Test
 
 ## 1. 프로젝트 소개
 
