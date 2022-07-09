@@ -6,6 +6,7 @@ export const getScrapArticles = createAsyncThunk(
   `${NAME}/GET_SCRAP_ARTICLES`,
   async (page: number, { dispatch }) => {
     dispatch(setPage(page));
+    /* 무한 스크롤로 가져올는 걸 1초 딜레이 */
     await new Promise((res) => setTimeout(res, 1000));
   }
 );
